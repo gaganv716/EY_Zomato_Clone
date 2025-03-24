@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* Navbar Styling */
+.navbar {
+  position: absolute;
+  top: 10px; /* Moves navbar down a bit */
+  left: 50%;
+  transform: translateX(-50%); /* Centers navbar */
+  width: 90%; /* Adjust width to keep it balanced */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  background-color: rgba(255, 255, 255, 0); /* Transparent */
+  font-family: 'Poppins', sans-serif;
+}
+
+.navbar-left, .navbar-right {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.navbar-left {
+  margin-left: 30px; /* Moves left text slightly to the right */
+}
+
+.navbar-right {
+  margin-right: 30px; /* Moves right text slightly to the left */
+}
+
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.menu li {
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.menu li:hover {
+  color: #ffcc00;
+}
+
