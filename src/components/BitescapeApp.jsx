@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./BitescapeApp.css";
 
 const BitescapeApp = () => {
-  const [placeholder, setPlaceholder] = useState("Enter phone number");
+  const [placeholder, setPlaceholder] = useState(""); // No placeholder by default
 
   const handleOptionChange = (event) => {
     if (event.target.value === "email") {
@@ -39,7 +39,6 @@ const BitescapeApp = () => {
                 type="radio"
                 name="send-option"
                 value="email"
-                defaultChecked
                 onChange={handleOptionChange}
               />{" "}
               Email

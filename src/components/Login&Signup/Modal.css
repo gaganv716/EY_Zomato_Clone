@@ -1,0 +1,159 @@
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Transparent black overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Modal Content */
+  .login-modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px; /* Rounded modal */
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+  }
+  
+  /* Close Button */
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  /* Form Styling */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .country-code-selector {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .phone-input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+  }
+  
+  /* Primary Button */
+  .modal-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #d23f57; /* Zomato-like red */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .modal-btn:hover {
+    background-color: #a82d44; /* Darker red on hover */
+  }
+  
+  .disabled-btn {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Separator */
+  .separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    position: relative;
+  }
+  
+  .separator span {
+    background: #fff;
+    padding: 0 10px;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .separator::before,
+  .separator::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ccc;
+  }
+  
+  /* Alternative Button */
+  .modal-btn-alt {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #f4f4f4;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .modal-btn-alt:hover {
+    background-color: #ddd;
+  }
+  
+  /* Google Login */
+  .google-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    cursor: pointer;
+  }
+  
+  .google-login img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .google-login span {
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  /* Sign Up Link */
+  .signup-link {
+    font-size: 0.9rem;
+    margin-top: 20px;
+  }
+  
+  .signup-link span {
+    color: #d23f57;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  

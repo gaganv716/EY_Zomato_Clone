@@ -2,47 +2,204 @@
 
 /* Navbar Styling */
 .navbar {
-  position: absolute;
-  top: 10px; /* Moves navbar down a bit */
-  left: 50%;
-  transform: translateX(-50%); /* Centers navbar */
-  width: 90%; /* Adjust width to keep it balanced */
+  position: fixed; /* Always at the top */
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width for alignment */
+  background: transparent; /* Transparent background */
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Space between left and right sections */
   align-items: center;
-  padding: 10px 0;
-  background-color: rgba(255, 255, 255, 0); /* Transparent */
+  padding: 15px 30px; /* Adjust padding for spacing */
+  z-index: 1000; /* Ensure it stays on top */
   font-family: 'Poppins', sans-serif;
+  box-shadow: none; /* Remove shadow */
 }
 
-.navbar-left, .navbar-right {
+/* Left Section */
+.navbar-left {
   display: flex;
   align-items: center;
-  color: white;
+  gap: 20px; /* Space between elements */
+  color: white; /* Text color for left side */
 }
 
-.navbar-left {
-  margin-left: 30px; /* Moves left text slightly to the right */
-}
-
+/* Right Section */
 .navbar-right {
-  margin-right: 30px; /* Moves right text slightly to the left */
-}
-
-.menu {
-  list-style: none;
   display: flex;
-  gap: 20px;
-  font-size: 1rem;
-  font-weight: 500;
+  align-items: center;
+  gap: 20px; /* Horizontal spacing between items */
+  margin: 0; /* Remove default <ul> margins */
+  padding: 0; /* Remove default <ul> padding */
 }
 
-.menu li {
+.navbar-right ul {
+  display: flex; /* Ensure items are horizontal */
+  gap: 20px; /* Space between "Add restaurant", "Log in", and "Sign up" */
+  list-style: none; /* Remove bullet points */
+  margin: 0; /* Override default list margin */
+  padding: 0; /* Override default list padding */
+}
+
+/* Links */
+.navbar-link {
+  text-decoration: none; /* Remove underline */
+  color: white; /* White color for text */
+  font-size: 1rem; /* Adjust font size */
+  font-weight: 500; /* Slightly bold */
+  transition: color 0.3s ease; /* Smooth color transition */
   cursor: pointer;
-  transition: color 0.3s ease-in-out;
+}
+
+.navbar-link:hover {
+  color: #ffcc00; /* Yellow highlight on hover */
+}
+
+/* Smartphone Icon */
+.smartphone-icon {
+  font-size: 1.2rem; /* Slightly larger icon size */
+  margin-right: 5px; /* Space between icon and text */
+}
+
+/* Right Section Hover */
+.menu li {
+  list-style: none; /* Make absolutely sure list-style is removed */
+  display: inline; /* Inline to ensure horizontal alignment */
+  cursor: pointer;
 }
 
 .menu li:hover {
-  color: #ffcc00;
+  color: #d23f57; /* Subtle red hover effect */
 }
 
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Dark transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure modals appear on top */
+}
+
+/* Modal Content */
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px; /* Smoothly rounded corners */
+  max-width: 400px; /* Fixed width */
+  width: 90%; /* Adjust for smaller screens */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Elevated shadow */
+  text-align: center;
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Modal Form */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.modal-form input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Modal Buttons */
+.modal-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #d23f57;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.modal-btn:hover {
+  background-color: #a82d44;
+}
+
+.disabled-btn {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Separator with Text */
+.separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ccc;
+}
+
+.separator span {
+  background: #fff;
+  padding: 0 10px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Google Login Section */
+.google-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+  cursor: pointer;
+}
+
+.google-login img {
+  width: 20px;
+  height: 20px;
+}
+
+.google-login span {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Sign Up Link */
+.signup-link {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.signup-link span {
+  color: #d23f57;
+  font-weight: bold;
+  cursor: pointer;
+}
