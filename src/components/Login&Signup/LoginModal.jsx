@@ -1,82 +1,77 @@
 import React, { useState } from "react";
-import "./Modal.css"; // For styling
+import "./Modal.css";
 
 const LoginModal = ({ show, handleClose, handleSignUp }) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [countryCode, setCountryCode] = useState("+91");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const isValidPhoneNumber = phoneNumber.length === 10; // Validate Indian phone number format
+  const isValidEmail = email.trim().length > 0 && email.includes("@");
+  const isValidPassword = password.length >= 6;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isValidPhoneNumber) {
-      console.log("OTP sent to:", `${countryCode} ${phoneNumber}`);
-      handleClose(); // Close the modal after sending OTP
+    if (!isValidEmail || !isValidPassword) return;
+    
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message || "Login failed");
+
+      localStorage.setItem("token", data.token); // Store JWT token
+      console.log("Logged in successfully:", email);
+      handleClose();
+      window.location.href = "/home"; // Redirect to home page
+    } catch (error) {
+      setErrorMessage(error.message);
+      console.error("Login error:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  if (!show) return null; // If `show` is false, don't render the modal
+  if (!show) return null;
 
   return (
     <div className="modal-overlay">
-      <div className="login-modal-content">
-        <button className="close-btn" onClick={handleClose}>
-          ✖
-        </button>
+      <div className="modal-content">
+        <button className="close-btn" onClick={handleClose}>✖</button>
         <h2>Login</h2>
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
-            <select
-              value={countryCode}
-              onChange={(e) => setCountryCode(e.target.value)}
-              className="country-code-selector"
-            >
-              <option value="+91">+91 (India)</option>
-              <option value="+1">+1 (USA)</option>
-              <option value="+44">+44 (UK)</option>
-              {/* Add more country codes as needed */}
-            </select>
-            <input
-              type="tel"
-              placeholder="Enter your phone number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              required
-              className="phone-input"
-            />
-          </div>
-          <button
-            type="submit"
-            className={`modal-btn ${isValidPhoneNumber ? "" : "disabled-btn"}`}
-            disabled={!isValidPhoneNumber}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        <form onSubmit={handleSubmit} className="modal-form">
+          <input 
+            type="email" 
+            placeholder="Enter your email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            required 
+          />
+          <input 
+            type="password" 
+            placeholder="Enter your password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            required 
+          />
+          <button 
+            type="submit" 
+            className={`modal-btn ${isValidEmail && isValidPassword ? "" : "disabled-btn"}`}
+            disabled={!isValidEmail || !isValidPassword || isSubmitting}
           >
-            Send One Time Password
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
-        <div className="separator">
-          <span>or</span>
-        </div>
-        <button
-          className="modal-btn-alt"
-          onClick={() => console.log("Continue with Email")}
-        >
-          Continue with Email
-        </button>
-        <div className="google-login">
-          <img
-            src="https://via.placeholder.com/20" // Replace with Google logo URL
-            alt="Google"
-          />
-          <span>Continue with Google</span>
-        </div>
         <p className="signup-link">
-          New to Bitescape?{" "}
-          <span onClick={() => {
-            handleClose();
-            handleSignUp();
-          }}>
-            Create account
-          </span>
+          New to Bitescape? <span onClick={() => { handleClose(); handleSignUp(); }}>Create account</span>
         </p>
       </div>
     </div>
