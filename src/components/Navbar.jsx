@@ -6,7 +6,7 @@ import LoginModal from "../components/Login&Signup/LoginModal";
 import SignupModal from "../components/Login&Signup/SignupModal";
 import "./Navbar.css";
 
-const Navbar = () => {
+const Navbar = ({ isAuthenticated, isHomepage }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
 
@@ -26,7 +26,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isHomepage ? "navbar-homepage" : ""}`}>
       <div className="navbar-left">
         <ul>
           <ScrollLink
@@ -46,16 +46,24 @@ const Navbar = () => {
               Add restaurant
             </Link>
           </li>
-          <li>
-            <span className="navbar-link" onClick={handleLoginClick}>
-              Log in
-            </span>
-          </li>
-          <li>
-            <span className="navbar-link" onClick={handleSignupClick}>
-              Sign up
-            </span>
-          </li>
+          {!isAuthenticated ? (
+            <>
+              <li>
+                <span className="navbar-link" onClick={handleLoginClick}>
+                  Log in
+                </span>
+              </li>
+              <li>
+                <span className="navbar-link" onClick={handleSignupClick}>
+                  Sign up
+                </span>
+              </li>
+            </>
+          ) : (
+            <li>
+              <span className="navbar-link">Logout</span>
+            </li>
+          )}
         </ul>
       </div>
 

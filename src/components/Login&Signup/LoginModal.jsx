@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Modal.css";
 
 const LoginModal = ({ show, handleClose, handleSignUp }) => {
@@ -6,6 +7,7 @@ const LoginModal = ({ show, handleClose, handleSignUp }) => {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const isValidEmail = email.trim().length > 0 && email.includes("@");
   const isValidPassword = password.length >= 6;
@@ -18,10 +20,10 @@ const LoginModal = ({ show, handleClose, handleSignUp }) => {
     setErrorMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
 
@@ -30,7 +32,7 @@ const LoginModal = ({ show, handleClose, handleSignUp }) => {
       localStorage.setItem("token", data.token); // Store JWT token
       console.log("Logged in successfully:", email);
       handleClose();
-      window.location.href = "/home"; // Redirect to home page
+      navigate("/Homepage"); // Redirect to home page
     } catch (error) {
       setErrorMessage(error.message);
       console.error("Login error:", error);
@@ -48,22 +50,22 @@ const LoginModal = ({ show, handleClose, handleSignUp }) => {
         <h2>Login</h2>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="modal-form">
-          <input 
-            type="email" 
-            placeholder="Enter your email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
-          <input 
-            type="password" 
-            placeholder="Enter your password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
+          <input
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={`modal-btn ${isValidEmail && isValidPassword ? "" : "disabled-btn"}`}
             disabled={!isValidEmail || !isValidPassword || isSubmitting}
           >

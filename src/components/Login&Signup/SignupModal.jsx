@@ -22,10 +22,10 @@ const SignupModal = ({ show, handleClose, handleLogin }) => {
     setErrorMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/signup", {
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
 
@@ -33,14 +33,11 @@ const SignupModal = ({ show, handleClose, handleLogin }) => {
 
       console.log("Account created:", email);
       localStorage.setItem("token", data.token);
-      localStorage.setItem("email", email);
-
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-
       handleClose();
-      navigate("/home");
+      navigate("/homepage");
     } catch (error) {
       setErrorMessage(error.message);
       console.error("Signup error:", error);
@@ -58,29 +55,29 @@ const SignupModal = ({ show, handleClose, handleLogin }) => {
         <h2>Sign Up</h2>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="modal-form">
-          <input 
-            type="email" 
-            placeholder="Enter your email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
-          <input 
-            type="password" 
-            placeholder="Enter a strong password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
+          <input
+            type="password"
+            placeholder="Enter a strong password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
-          <input 
-            type="password" 
-            placeholder="Confirm your password" 
-            value={confirmPassword} 
-            onChange={(e) => setConfirmPassword(e.target.value)} 
-            required 
+          <input
+            type="password"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={`modal-btn ${isValidEmail && isValidPassword && passwordsMatch ? "" : "disabled-btn"}`}
             disabled={!isValidEmail || !isValidPassword || !passwordsMatch || isSubmitting}
           >

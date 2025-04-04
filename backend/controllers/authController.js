@@ -1,38 +1,28 @@
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 
 // Generate JWT Token
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 // Register User
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-    // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Create new user
-    const newUser = await User.create({ name, email, password });
+    const user = await User.create({ email, password });
 
-    if (newUser) {
-      res.status(201).json({
-        _id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        token: generateToken(newUser.id),
-      });
-    } else {
-      res.status(400).json({ message: "Invalid user data" });
-    }
+    res.status(201).json({
+      id: user.id,
+      email: user.email,
+      token: generateToken(user.id),
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -47,8 +37,7 @@ export const loginUser = async (req, res) => {
 
     if (user && (await user.matchPassword(password))) {
       res.json({
-        _id: user.id,
-        name: user.name,
+        id: user.id,
         email: user.email,
         token: generateToken(user.id),
       });
