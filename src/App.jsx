@@ -1,5 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import Home from "./pages/Home";
 import Homepage from "./pages/Homepage/Homepage.jsx";
@@ -18,30 +24,24 @@ import Order from "./pages/Restaurant/Order.jsx";
 import GoogleAuthSuccess from "./pages/GoogleAuthSuccess";
 import CompleteProfile from "./pages/CompleteProfile";
 
-// ✅ Scroll to top on every route change
 import ScrollToTop from "./components/ScrollToTop";
 
-// ✅ Wrap App with inner function so we can use useNavigate
-function AppWrapper() {
+// ✅ Wrapper for passing props to Order page
+const OrderWrapper = ({ isAuthenticated, onLogout }) => {
+  const { id } = useParams();
   return (
-    <Router>
-      <ScrollToTop />
-      <App />
-    </Router>
+    <Order id={id} isAuthenticated={isAuthenticated} onLogout={onLogout} />
   );
-}
+};
 
-function App() {
+function AppInner() {
   const navigate = useNavigate();
-
-  // ✅ Check if user is logged in
   const isAuthenticated = !!localStorage.getItem("token");
 
-  // ✅ Handle logout
   const handleLogout = () => {
     console.log("Logging out...");
     localStorage.removeItem("token");
-    navigate("/homepage");
+    navigate("/"); // 👈 Redirect to landing
   };
 
   return (
@@ -50,10 +50,22 @@ function App() {
         path="/"
         element={<Home isAuthenticated={isAuthenticated} onLogout={handleLogout} />}
       />
-      <Route path="/homepage" element={<Homepage />} />
-      <Route path="/dining" element={<Dining />} />
-      <Route path="/nightlife" element={<Nightlife />} />
-      <Route path="/order/:id" element={<Order />} />
+      <Route
+        path="/homepage"
+        element={<Homepage isAuthenticated={isAuthenticated} onLogout={handleLogout} />}
+      />
+      <Route
+  path="/dining"
+  element={<Dining isAuthenticated={isAuthenticated} onLogout={handleLogout} />}
+/>
+<Route
+  path="/nightlife"
+  element={<Nightlife isAuthenticated={isAuthenticated} onLogout={handleLogout} />}
+/>
+      <Route
+        path="/order/:id"
+        element={<OrderWrapper isAuthenticated={isAuthenticated} onLogout={handleLogout} />}
+      />
       <Route path="/get-app" element={<BitescapeApp />} />
       <Route
         path="/add-restaurant"
@@ -73,6 +85,16 @@ function App() {
       <Route path="/google-auth-success" element={<GoogleAuthSuccess />} />
       <Route path="/complete-profile" element={<CompleteProfile />} />
     </Routes>
+  );
+}
+
+// ✅ App wrapped with Router
+function AppWrapper() {
+  return (
+    <Router>
+      <ScrollToTop />
+      <AppInner />
+    </Router>
   );
 }
 

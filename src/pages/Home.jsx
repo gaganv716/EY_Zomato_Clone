@@ -33,10 +33,23 @@ const Home = () => {
     setShowSignup(false);
   };
 
+  const handleLogout = () => {
+    console.log("User logged out!");
+    // Add logout logic here, e.g., clearing authentication tokens or redirecting to login
+    window.location.href = "/"; // Redirect to the homepage after logout
+  };
+  
   return (
     <div>
       {/* Navbar with Login & Signup Handlers */}
-      <Navbar onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
+      <Navbar
+  isAuthenticated={false}
+  isHomepage={false}
+  onLogout={handleLogout} 
+  onLoginClick={handleLoginClick}
+  onSignupClick={handleSignupClick}
+/>
+
 
       {/* Main Sections */}
       <SearchBar />

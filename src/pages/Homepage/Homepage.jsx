@@ -4,13 +4,12 @@ import Navbar from "../../components/Navbar";
 import Explore from "../../components/Explore";
 import Footer from "../../components/Footer";
 import Restaurantlist from "../../pages/Restaurant/Restaurantlist";
-import LogoutPopup from "../LogoutPopup"; // already imported
+import LogoutPopup from "../LogoutPopup";
 import "./Homepage.css";
 
-const Homepage = () => {
+const Homepage = ({ isAuthenticated, onLogout }) => {
   const [selectedCategory, setSelectedCategory] = useState("Delivery");
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [showLogoutPopup, setShowLogoutPopup] = useState(false); // 🔥 state to control popup
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   const underlineRef = useRef(null);
   const categoryRefs = useRef([]);
   const navigate = useNavigate();
@@ -59,13 +58,12 @@ const Homepage = () => {
   };
 
   const handleLogout = () => {
-    setShowLogoutPopup(true); // 👈 Show popup when logout is triggered
+    setShowLogoutPopup(true);
   };
 
   const handleConfirmLogout = () => {
-    setIsAuthenticated(false);
     setShowLogoutPopup(false);
-    navigate("/"); // Or wherever you want to send the user
+    onLogout(); // ✅ Logout comes from App.jsx
   };
 
   const handleCancelLogout = () => {
@@ -76,7 +74,6 @@ const Homepage = () => {
     <div className="homepage">
       <Navbar isAuthenticated={isAuthenticated} isHomepage={true} onLogout={handleLogout} />
 
-      {/* Category Section */}
       <div className="categories-container">
         <div className="categories-wrapper">
           {categories.map((category, index) => (
@@ -94,7 +91,6 @@ const Homepage = () => {
         </div>
       </div>
 
-      {/* Inspiration Section */}
       <section className="inspiration-section">
         <h2 className="section-title">Inspiration for your first order</h2>
         <div className="food-items-grid">
@@ -107,7 +103,6 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Top Brands Section */}
       <section className="brands-section">
         <h2 className="section-title">Top brands for you</h2>
         <div className="brands-items-grid">
@@ -121,20 +116,17 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Restaurants Near You Section */}
       <section className="restaurants-section">
         <h2 className="section-title">Restaurants Near You</h2>
         <Restaurantlist />
       </section>
 
-      {/* Explore Section */}
       <section className="explore-section">
         <Explore />
       </section>
 
       <Footer />
 
-      {/* 🔥 Show LogoutPopup only if triggered */}
       {showLogoutPopup && (
         <LogoutPopup
           onConfirm={handleConfirmLogout}

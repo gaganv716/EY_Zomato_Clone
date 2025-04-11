@@ -32,19 +32,25 @@ const LoginModal = ({ show, handleClose, handleSignUp }) => {
 
       if (!response.ok) throw new Error(data.message || "Login failed");
 
-      localStorage.setItem("token", data.token);
-      console.log("Logged in successfully:", email);
-      handleClose();
-      navigate("/Homepage");
-    } catch (error) {
-      setErrorMessage(error.message);
-      console.error("Login error:", error);
+localStorage.setItem("token", data.token);
+console.log("Logged in successfully:", email);
+handleClose();
+
+// ✅ Conditional navigation
+if (data.isProfileComplete) {
+  navigate("/homepage");
+} else {
+  navigate("/complete-profile");
+}
+
+  } catch (error) {
+    setErrorMessage(error.message || "An error occurred during login");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const handleGoogleLogin = () => {
+  
+    const handleGoogleLogin = () => {
     window.location.href = `${API_BASE_URL}/api/auth/google`; // ✅ Uses environment variable
   };
 

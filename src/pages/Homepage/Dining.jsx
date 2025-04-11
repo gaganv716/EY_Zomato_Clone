@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react"; // Include useState and useEffect
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar"; // Shared Navbar
-import Collection from "../../components/Collection"; // Add Collection section
-import Restaurantlist from "../Restaurant/Restaurantlist"; // Shared Restaurant List section
-import Explore from "../../components/Explore"; // Add Explore section
-import Footer from "../../components/Footer"; // Shared Footer
+import Navbar from "../../components/Navbar";
+import Collection from "../../components/Collection";
+import Restaurantlist from "../Restaurant/Restaurantlist";
+import Explore from "../../components/Explore";
+import Footer from "../../components/Footer";
+import LogoutPopup from "../LogoutPopup"; // ✅ Import logout popup
 import "../../pages/Restaurant/Restaurantlist.css";
 import "./Dining.css";
-
 
 const categories = [
   { name: "Dining Out", icon: "🍽️", path: "/dining" },
@@ -15,23 +15,21 @@ const categories = [
   { name: "Nightlife", icon: "🍺", path: "/nightlife" },
 ];
 
-function Dining() {
-  const [selectedCategory, setSelectedCategory] = useState("Dining Out"); // Default selected category
+function Dining({ isAuthenticated, onLogout }) {
+  const [selectedCategory, setSelectedCategory] = useState("Dining Out");
   const underlineRef = useRef(null);
   const categoryRefs = useRef([]);
   const navigate = useNavigate();
 
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false); // ✅
+
   const updateUnderline = (index) => {
     const category = categoryRefs.current[index];
     if (underlineRef.current && category) {
-      console.log("OffsetLeft:", category.offsetLeft); // Debugging position
-      console.log("Width:", category.offsetWidth);    // Debugging width
-  
-      // Calculate width and position for the underline
       underlineRef.current.style.width = `${category.offsetWidth}px`;
       underlineRef.current.style.transform = `translateX(${category.offsetLeft}px)`;
     }
-  };  
+  };
 
   useEffect(() => {
     const index = categories.findIndex((c) => c.name === selectedCategory);
@@ -44,19 +42,37 @@ function Dining() {
     navigate(category.path);
   };
 
+  // ✅ Logout logic
+  const handleLogout = () => {
+    setShowLogoutPopup(true);
+  };
+
+  const handleConfirmLogout = () => {
+    setShowLogoutPopup(false);
+    onLogout();
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutPopup(false);
+  };
+
   return (
     <div className="dining-page">
-      <Navbar isAuthenticated={true} isHomepage={true} /> {/* Pass the same props */}
+      <Navbar
+        isAuthenticated={isAuthenticated}
+        isHomepage={true}
+        onLogout={handleLogout}
+      />
 
-
-      {/* Categories Section */}
       <div className="categories-container">
         <div className="categories-wrapper">
           {categories.map((category, index) => (
             <div
               key={category.name}
               ref={(el) => (categoryRefs.current[index] = el)}
-              className={`category-item ${selectedCategory === category.name ? "active" : ""}`}
+              className={`category-item ${
+                selectedCategory === category.name ? "active" : ""
+              }`}
               onClick={() => handleCategoryClick(category, index)}
             >
               <span className="category-icon">{category.icon}</span>
@@ -67,23 +83,27 @@ function Dining() {
         </div>
       </div>
 
-      {/* Collection Section */}
       <section className="collection-section">
         <Collection />
       </section>
 
-      {/* Restaurant List Section */}
       <section className="restaurant-list-section">
         <h2 className="section-title">Restaurants for Dining Out</h2>
         <Restaurantlist />
       </section>
 
-      {/* Explore Section */}
       <section className="explore-section">
         <Explore />
       </section>
 
       <Footer />
+
+      {showLogoutPopup && (
+        <LogoutPopup
+          onConfirm={handleConfirmLogout}
+          onCancel={handleCancelLogout}
+        />
+      )}
     </div>
   );
 }

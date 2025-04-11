@@ -36,17 +36,24 @@ const SignupModal = ({ show, handleClose, handleLogin }) => {
 
       console.log("Account created:", email);
       localStorage.setItem("token", data.token);
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      handleClose();
-      navigate("/homepage");
-    } catch (error) {
-      setErrorMessage(error.message);
-      console.error("Signup error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+console.log("Account created:", email);
+setEmail("");
+setPassword("");
+setConfirmPassword("");
+handleClose();
+
+// ✅ Conditional navigation
+if (data.isProfileComplete) {
+  navigate("/homepage");
+} else {
+  navigate("/complete-profile");
+}
+} catch (error) {
+  console.error("Error during signup:", error);
+  setErrorMessage(error.message || "An error occurred during signup.");
+} finally {
+  setIsSubmitting(false);
+  }
   };
 
   if (!show) return null;
