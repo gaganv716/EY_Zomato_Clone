@@ -43,13 +43,25 @@ const Homepage = ({ isAuthenticated, onLogout }) => {
     if (underlineRef.current && category) {
       underlineRef.current.style.width = `${category.offsetWidth}px`;
       underlineRef.current.style.transform = `translateX(${category.offsetLeft}px)`;
+      underlineRef.current.style.transition = "transform 0.3s ease, width 0.3s ease";
     }
   };
+  
 
   useEffect(() => {
     const index = categories.findIndex((c) => c.name === selectedCategory);
     updateUnderline(index);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const index = categories.findIndex((c) => c.name === selectedCategory);
+      updateUnderline(index);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [selectedCategory]);
+  
 
   const handleCategoryClick = (category, index) => {
     setSelectedCategory(category.name);
