@@ -12,7 +12,7 @@ const Order = ({ isAuthenticated, onLogout }) => {
   const restaurant = restaurantData.find((rest) => rest.id === id);
 
   const [cart, setCart] = useState([]);
-  const [popupStep, setPopupStep] = useState(0); // 0: none, 1: address, 2: payment mode, 3: payment details, 4: success
+  const [popupStep, setPopupStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
   const [selectedUPI, setSelectedUPI] = useState("");
@@ -31,12 +31,31 @@ const Order = ({ isAuthenticated, onLogout }) => {
   };
   const handleCancelLogout = () => setShowLogoutPopup(false);
 
-  const addToCart = (item) => {
+  const addToCart = async (item) => {
     const exists = cart.find((c) => c.dish === item.dish);
-    if (exists) {
-      setCart(cart.map((c) => c.dish === item.dish ? { ...c, quantity: c.quantity + 1 } : c));
-    } else {
-      setCart([...cart, { ...item, quantity: 1 }]);
+    const updatedCart = exists
+      ? cart.map((c) => c.dish === item.dish ? { ...c, quantity: c.quantity + 1 } : c)
+      : [...cart, { ...item, quantity: 1 }];
+
+    setCart(updatedCart);
+
+    const googleMapsEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(restaurant.address)}&output=embed`;
+
+    try {
+      await fetch("http://localhost:5000/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: "test-user-123",
+          item: {
+            foodId: item.dish,
+            restaurantId: restaurant.id,
+            quantity: 1
+          }
+        })
+      });
+    } catch (error) {
+      console.error("❌ Error saving to DB:", error);
     }
   };
 
@@ -74,13 +93,43 @@ const Order = ({ isAuthenticated, onLogout }) => {
     setPopupStep(3);
   };
 
-  const simulatePayment = () => {
-    setPopupStep(4);
+  const simulatePayment = async () => {
+    setPopupStep(4); // Show "Payment Successful"
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: "test-user-123",
+          restaurantId: restaurant.id,
+          items: cart,
+          address,
+          paymentMethod
+        })
+      });
+  
+      const data = await response.json();
+  
+      if (data && data._id) {
+        // ✅ Store items for OrderSuccess page
+        localStorage.setItem("orderedItems", JSON.stringify(cart));
+  
+        console.log("🚀 Navigating to OrderSuccess.jsx with:", data._id);
+        
+        setTimeout(() => {
+          navigate("/order-success", { state: { orderId: data._id, restaurantId: restaurant.id } });
+        }, 3000);
+      } else {
+        console.error("❌ Order submission failed:", data);
+      }
+    } catch (err) {
+      console.error("❌ Payment simulation error:", err);
+    }
+  
     setCart([]);
-    setTimeout(() => {
-      navigate("/order-success"); // Optional: create a thank you page route
-    }, 5000);
   };
+  
 
   const closePopup = () => {
     setPopupStep(0);
@@ -121,40 +170,66 @@ const Order = ({ isAuthenticated, onLogout }) => {
       </header>
 
       <div className="order-main">
-        <h2>Menu</h2>
-        <ul className="menu-list">
-          {restaurant.menu.map((item, index) => {
-            const quantity = cart.find(c => c.dish === item.dish)?.quantity || 0;
-            return (
-              <li key={index} className="menu-item">
-                <span>{item.dish} - ₹{item.price}</span>
-                {quantity === 0 ? (
-                  <button className="add-btn" onClick={() => addToCart(item)}>Add to Cart</button>
-                ) : (
-                  <div className="quantity-control">
-                    <button onClick={() => updateQuantity(item, -1)}>-</button>
-                    <span>{quantity}</span>
-                    <button onClick={() => updateQuantity(item, 1)}>+</button>
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-
-        {cart.length > 0 && (
-          <div className="cart-summary">
-            <h3>🛒 Cart Summary</h3>
-            {cart.map((item, i) => (
-              <p key={i}>{item.dish} × {item.quantity} = ₹{item.price * item.quantity}</p>
-            ))}
-            <strong>Total: ₹{getTotal()}</strong>
-            <button className="order-now-button" onClick={handleOrderNow}>Proceed</button>
+        {/* 📸 Updated Gallery Section */}
+        <div className="gallery-section">
+          <div className="main-image">
+            <img src={restaurant.image} alt={restaurant.name} />
           </div>
-        )}
+
+          <div className="side-gallery">
+            {restaurant.gallery?.slice(0, 2).map((img, index) => (
+              <img key={index} src={img} alt={`Gallery ${index + 1}`} />
+            ))}
+            <button className="view-gallery-btn">View Gallery</button>
+          </div>
+        </div>
+
+        <div className="popular-dishes">
+          <h3>Popular Dishes</h3>
+          <div className="dishes-scroll">
+            {restaurant.menu.slice(0, 6).map((item, index) => (
+              <div key={index} className="dish-card">
+                {item.dish}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="order-main">
+          <h2>Menu</h2>
+          <ul className="menu-list">
+            {restaurant.menu.map((item, index) => {
+              const quantity = cart.find(c => c.dish === item.dish)?.quantity || 0;
+              return (
+                <li key={index} className="menu-item">
+                  <span>{item.dish} - ₹{item.price}</span>
+                  {quantity === 0 ? (
+                    <button className="add-btn" onClick={() => addToCart(item)}>Add to Cart</button>
+                  ) : (
+                    <div className="quantity-control">
+                      <button onClick={() => updateQuantity(item, -1)}>-</button>
+                      <span>{quantity}</span>
+                      <button onClick={() => updateQuantity(item, 1)}>+</button>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+  
+          {cart.length > 0 && (
+            <div className="cart-summary">
+              <h3>🛒 Cart Summary</h3>
+              {cart.map((item, i) => (
+                <p key={i}>{item.dish} × {item.quantity} = ₹{item.price * item.quantity}</p>
+              ))}
+              <strong>Total: ₹{getTotal()}</strong>
+              <button className="order-now-button" onClick={handleOrderNow}>Proceed</button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Multi-step Popup Flow */}
       {popupStep !== 0 && (
         <div className="popup-overlay">
           <div className="popup-content" ref={popupRef}>
@@ -230,6 +305,18 @@ const Order = ({ isAuthenticated, onLogout }) => {
       {showLogoutPopup && (
         <LogoutPopup onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />
       )}
+
+      {/* ✅ Google Maps Embed */}
+      {restaurant.address && (
+          <iframe
+            src={`https://www.google.com/maps?q=${encodeURIComponent(restaurant.address)}&output=embed`}
+            width="100%"
+            height="300"
+            style={{ borderRadius: "10px", border: "none" }}
+            allowFullScreen
+            loading="lazy"
+          ></iframe>
+        )}
 
       <Footer />
     </div>

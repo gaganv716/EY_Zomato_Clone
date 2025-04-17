@@ -9,6 +9,9 @@ import LogoutPopup from "../LogoutPopup"; // ✅ Import logout popup
 import "../../pages/Restaurant/Restaurantlist.css";
 import "./Dining.css";
 
+// ✅ Import the new diningRestaurants array
+import diningRestaurants  from "../../data/diningRestaurants"; // Adjust path if needed
+
 const categories = [
   { name: "Dining Out", icon: "🍽️", path: "/dining" },
   { name: "Delivery", icon: "🛵", path: "/homepage" },
@@ -21,7 +24,7 @@ function Dining({ isAuthenticated, onLogout }) {
   const categoryRefs = useRef([]);
   const navigate = useNavigate();
 
-  const [showLogoutPopup, setShowLogoutPopup] = useState(false); // ✅
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
 
   const updateUnderline = (index) => {
     const category = categoryRefs.current[index];
@@ -42,7 +45,6 @@ function Dining({ isAuthenticated, onLogout }) {
     navigate(category.path);
   };
 
-  // ✅ Logout logic
   const handleLogout = () => {
     setShowLogoutPopup(true);
   };
@@ -89,7 +91,7 @@ function Dining({ isAuthenticated, onLogout }) {
 
       <section className="restaurant-list-section">
         <h2 className="section-title">Restaurants for Dining Out</h2>
-        <Restaurantlist />
+        <Restaurantlist restaurants={diningRestaurants} /> {/* ✅ Updated here */}
       </section>
 
       <section className="explore-section">

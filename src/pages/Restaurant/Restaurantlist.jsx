@@ -1,9 +1,10 @@
 // RestaurantList.jsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Restaurantlist.css"; // Add specific styles for the restaurant list if needed
 
 const Restaurantlist = ({ restaurants }) => {
+  const navigate = useNavigate();
   const defaultRestaurants = [
     {
       id: "nandhana-palace",
@@ -157,13 +158,15 @@ const Restaurantlist = ({ restaurants }) => {
   return (
     <div className="restaurants-grid">
       {restaurantData.map((restaurant, index) => (
-        <div key={index} className="restaurant-card">
+        <div
+          key={index}
+          className="restaurant-card"
+          onClick={() => navigate(`/order/${restaurant.id}`)}
+          style={{ cursor: "pointer" }}
+        >
           <img src={restaurant.image} alt={restaurant.name} className="restaurant-image" />
           <div className="restaurant-info">
-            <h3 className="restaurant-name">
-              {/* Dynamic link to RestaurantDetails page */}
-              <Link to={`/order/${restaurant.id}`}>{restaurant.name}</Link>
-            </h3>
+            <h3 className="restaurant-name">{restaurant.name}</h3>
             <p className="restaurant-description">{restaurant.description}</p>
             <div className="restaurant-meta">
               <span className="restaurant-rating">⭐ {restaurant.rating}</span>

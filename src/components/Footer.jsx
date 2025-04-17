@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Footer.css";
 
 const Footer = () => {
@@ -11,6 +11,10 @@ const Footer = () => {
   ];
 
   const languages = ["English", "Hindi", "Spanish", "French", "German"];
+
+  // ✅ State for selected country & language
+  const [selectedCountry, setSelectedCountry] = useState(countries[0].name);
+  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
 
   return (
     <footer className="footer">
@@ -68,32 +72,42 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Country and Language Selectors */}
+        {/* ✅ Updated Country & Language Selectors */}
         <div className="footer-section">
           <h4 className="footer-title">Settings</h4>
           <div className="selectors">
             {/* Country Selector */}
             <div className="country-selector">
               <label htmlFor="countries">Country: </label>
-              <select id="countries" name="countries">
+              <select
+                id="countries"
+                name="countries"
+                value={selectedCountry}
+                onChange={(e) => setSelectedCountry(e.target.value)}
+              >
                 {countries.map((country, index) => (
                   <option key={index} value={country.name}>
-                    <span>
-                      <img
-                        src={country.flag}
-                        alt={`${country.name} flag`}
-                        className="flag-icon"
-                      />
-                    </span>{" "}
-                    {country.name}
+                    {country.name} {/* ✅ Removed <span> inside <option> */}
                   </option>
                 ))}
               </select>
+              {/* ✅ Display Flag Outside Select */}
+              <img
+                src={countries.find(c => c.name === selectedCountry)?.flag}
+                alt="Country Flag"
+                className="flag-icon"
+              />
             </div>
+
             {/* Language Selector */}
             <div className="language-selector">
               <label htmlFor="languages">Language: </label>
-              <select id="languages" name="languages">
+              <select
+                id="languages"
+                name="languages"
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+              >
                 {languages.map((language, index) => (
                   <option key={index} value={language}>
                     {language}
@@ -139,7 +153,7 @@ const Footer = () => {
       <div className="footer-disclaimer">
         <p>
           By continuing past this page, you agree to our Terms of Service,
-          Cookie Policy, Privacy Policy and Content Policies. All trademarks
+          Cookie Policy, Privacy Policy, and Content Policies. All trademarks
           are properties of their respective owners. 2025 © Bitescape™ Ltd. All rights reserved.
         </p>
       </div>

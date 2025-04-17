@@ -24,6 +24,7 @@ import Order from "./pages/Restaurant/Order.jsx";
 import GoogleAuthSuccess from "./pages/GoogleAuthSuccess";
 import CompleteProfile from "./pages/CompleteProfile";
 import OrderSuccess from "./pages/OrderSuccess";
+import TrackOrder from "./pages/TrackOrder.jsx";
 
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -86,6 +87,7 @@ function AppInner() {
       <Route path="/google-auth-success" element={<GoogleAuthSuccess />} />
       <Route path="/complete-profile" element={<CompleteProfile />} />
       <Route path="/order-success" element={<OrderSuccess />} />
+      <Route path="/track-order" element={<TrackOrder />} />
     </Routes>
   );
 }
